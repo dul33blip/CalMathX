@@ -130,6 +130,16 @@ warmUp()
   .catch((e) => console.error(e.message));
 
 const server = app.listen(PORT, () => console.log(`CalMathX API on http://localhost:${PORT}`));
+server.on('error', (err) => {
+  if (err.code === 'EADDRINUSE') {
+    console.error(`\nPort ${PORT} is already in use: CalMathX is probably already running in another terminal.\n` +
+      'Use that one (http://localhost:5173), or stop it with Ctrl+C before starting a new copy.\n');
+  } else {
+    console.error(err);
+  }
+  stop();
+  process.exit(1);
+});
 
 for (const sig of ['SIGINT', 'SIGTERM']) {
   process.on(sig, () => {
